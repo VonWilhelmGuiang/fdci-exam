@@ -1,0 +1,592 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Contact System",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Authenticate user and generate JWT token",
+                "description": "Login",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Password",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "description": "token",
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "description": "message",
+                                            "type": "string"
+                                        },
+                                        "success": {
+                                            "description": "success",
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "422": {
+                        "description": "Required Fields are Empty"
+                    }
+                }
+            }
+        },
+        "/api/auth/verify": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check if user is logged in",
+                "description": "Verify",
+                "operationId": "86a3349a0306cb26904691a7211faf38",
+                "responses": {
+                    "200": {
+                        "description": "Logged In"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register an Account",
+                "description": "Register an Account",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "password_confirmation",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Account Email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Account Password",
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "Confirm Password",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "User's Full Name",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Account Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "token": {
+                                            "description": "token",
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Content"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "delete": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check if user is logged in",
+                "description": "User Logout",
+                "operationId": "1ef69131b914976d7b0827b2b9d192df",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "description": "success",
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contact/view": {
+            "get": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Get User Contacts",
+                "description": "Contacts",
+                "operationId": "f4731486ab7d760190cc1e7ff4c2d6c4",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Keyword to be searched",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "limit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "contact_list": {
+                                            "description": "Contact List",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "contact_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "company": {
+                                                        "type": "string"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string"
+                                                    },
+                                                    "email": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object",
+                                                "format": "id"
+                                            },
+                                            "collectionFormat": "multi"
+                                        },
+                                        "count": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contact/create": {
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Create new Contact",
+                "description": "Create New Contact",
+                "operationId": "c383e74be076fb393afdf499b9cf7a17",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Full Name of Contact",
+                                        "type": "string"
+                                    },
+                                    "company": {
+                                        "description": "Company",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Phone",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New Contact Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "contact_id": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": "false"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Data Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": "false"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contact/update/{contact_id}": {
+            "put": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Update Contact",
+                "description": "Update contact",
+                "operationId": "148fc82c8f25983f2e5939dd3484590b",
+                "parameters": [
+                    {
+                        "name": "contact_id",
+                        "in": "path",
+                        "description": "Contact Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Full Name of Contact",
+                                        "type": "string"
+                                    },
+                                    "company": {
+                                        "description": "Company",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Phone",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "New Contact Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "409": {
+                        "description": "Data Conflict"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contact/delete/{contact_id}": {
+            "delete": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Delete a Contact",
+                "description": "Soft Delete a contact",
+                "operationId": "6a5c38f80ed0775cc3b8b2c687e72831",
+                "parameters": [
+                    {
+                        "name": "contact_id",
+                        "in": "path",
+                        "description": "Contact ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contact Deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}
